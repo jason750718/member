@@ -5,4 +5,28 @@ module.exports = class CheckCustomer {
         const result = re.test(email);
         return result;
     }
+
+    // 判斷空值
+    checkNull(data) {
+        for (var key in data) {
+            // 不為空
+            return false;
+        }
+        // 為空值
+        return true;
+    }
+
+    // 檔案大小
+    checkFileSize(fileSize) {
+        let maxSize = 1 * 1024 * 1024; // 1MB
+        return fileSize < maxSize;
+    }
+
+    // 檢查檔案類型
+    checkFileType(fileType) {
+        if (fileType === 'image/png' || fileType === 'image/jpg' || fileType === 'image/jpeg') {
+            return true;
+        }
+        return false;
+    }
 }

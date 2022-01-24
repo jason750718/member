@@ -5,7 +5,9 @@ const MemberModifyMethod = require('../controllers/modify_controller');
 
 memberModifyMethod = new MemberModifyMethod();
 
-/* GET home page. */
 router.post('/register', memberModifyMethod.postRegister);
+router.post('/login', memberModifyMethod.postLogin);
+router.put('/update', memberModifyMethod.putUpdate);
+router.put('/updateimg', memberModifyMethod.putUpdateImg);
 
 module.exports = router;
