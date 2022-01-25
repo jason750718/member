@@ -1,10 +1,10 @@
-const toRegister = require('../models/register_model');
-const loginAction = require('../models/login_model');
-const updateAction = require('../models/update_model');
-const checkCustomer = require('../service/member_check');
-const encryption = require('../models/encryption');
-const config = require('../config/development_config');
-const verify = require('../models/verifycation');
+const toRegister = require('../../models/member/register_model');
+const loginAction = require('../../models/member/login_model');
+const updateAction = require('../../models/member/update_model');
+const checkCustomer = require('../../service/member_check');
+const encryption = require('../../models/member/encryption');
+const config = require('../../config/development_config');
+const verify = require('../../models/member/verifycation_model');
 
 const jwt = require('jsonwebtoken');
 const formidable = require('formidable');

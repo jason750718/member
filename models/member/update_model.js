@@ -1,4 +1,4 @@
-const { query } = require('./connection_db');
+const { query } = require('../connection_db');
 
 module.exports = async function customerEdit(id, memberUpdateData) {
     let result = {}
