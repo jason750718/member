@@ -1,11 +1,10 @@
 const { query } = require('../connection_db');
 
-module.exports = async function getAllOrderData() {
+module.exports = function getAllOrderData() {
     try {
-        let rows = await query('SELECT * FROM order_list');
-        return Promise.resolve(rows);
+        return query('SELECT * FROM order_list');
     } catch (error) {
         console.log("取得所有訂單資料失敗");
-        return Promise.reject(error);
+        return error;
     }
 }

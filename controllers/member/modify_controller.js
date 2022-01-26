@@ -10,6 +10,9 @@ const jwt = require('jsonwebtoken');
 const formidable = require('formidable');
 const fs = require('fs');
 
+const Common = require('../../service/common');
+
+common = new Common();
 check = new checkCustomer();
 
 module.exports = class Member {
@@ -20,7 +23,7 @@ module.exports = class Member {
             name: req.body.name,
             email: req.body.email,
             password: password,
-            create_date: onTime()
+            create_date: common.onTime()
         }
 
         if (!check.checkEmail(memberData.email)) {
@@ -99,7 +102,7 @@ module.exports = class Member {
                     const memberUpdateData = {
                         name: req.body.name,
                         password: password,
-                        update_date: onTime()
+                        update_date: common.onTime()
                     }
 
                     updateAction(id, memberUpdateData).then(result => {
@@ -166,7 +169,7 @@ module.exports = class Member {
                     name: fields.name,
                     password: password,
                     img: image,
-                    update_date: onTime()
+                    update_date: common.onTime()
                 };
 
                 updateAction(id, memberUpdateData).then(result => {
@@ -189,22 +192,4 @@ const fileToBase64 = (filePath) => {
             resolve(data);
         })
     });
-}
-
-//取得現在時間，並將格式轉成YYYY-MM-DD HH:MM:SS
-const onTime = () => {
-    const date = new Date();
-    const mm = date.getMonth() + 1;
-    const dd = date.getDate();
-    const hh = date.getHours();
-    const mi = date.getMinutes();
-    const ss = date.getSeconds();
-
-    return [date.getFullYear(), "-" +
-        (mm > 9 ? '' : '0') + mm, "-" +
-        (dd > 9 ? '' : '0') + dd, " " +
-        (hh > 9 ? '' : '0') + hh, ":" +
-        (mi > 9 ? '' : '0') + mi, ":" +
-        (ss > 9 ? '' : '0') + ss
-    ].join('');
 }

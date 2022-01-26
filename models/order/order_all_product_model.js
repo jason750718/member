@@ -1,12 +1,17 @@
 const { query } = require('../connection_db');
 
+const Common = require('../../service/common');
+
+common = new Common();
+
 module.exports = function orderProductListData(orderList) {
     //訂購整筆商品
     let result = {};
 
     return new Promise(async (resolve, reject) => {
         // 提取orderID
-        let orderID = await getOrderID() + 1;
+        let orderID = await common.getOrderID() + 1;
+        console.log("orderID : " + orderID);
 
         const products = orderList.productID;
         const productArray = products.split(',');
@@ -38,7 +43,7 @@ module.exports = function orderProductListData(orderList) {
 
         let orderAllData = [];
         for (let key in productQuantity) {
-            const price = await (getProductPrice(key));
+            const price = await common.getProductPrice(key);
             const orderData = {
                 order_id: orderID,
                 member_id: orderList.memberID,
@@ -50,7 +55,7 @@ module.exports = function orderProductListData(orderList) {
             };
 
             try {
-                query('INSERT INTO order_list SET ?', orderData);
+                await query('INSERT INTO order_list SET ?', orderData);
             } catch (err) {
                 console.log(err);
                 result.err = "伺服器錯誤，請稍後在試！"
@@ -75,25 +80,4 @@ module.exports = function orderProductListData(orderList) {
         result.orderData = orderAllData
         resolve(result);
     })
-}
-
-const getOrderID = async () => {
-    try {
-        let rows = await query('SELECT MAX(order_id) AS id FROM order_list');
-        return Promise.resolve(rows[0].id);
-    } catch (error) {
-        console.log("取得訂單編號失敗: " + error);
-        return Promise.reject(error);
-    }
-}
-
-// 取得商品價格
-const getProductPrice = async (productID) => {
-    try {
-        let rows = await query('SELECT price FROM product WHERE id = ?', [productID]);
-        return Promise.resolve(rows[0].price);
-    } catch (error) {
-        console.log("取得商品價格失敗: " + error);
-        return Promise.reject(error);
-    }
 }
