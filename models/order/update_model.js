@@ -23,9 +23,12 @@ module.exports = async function orderEdit(updateList) {
 
     if (hasData && hasComplete) {
         const price = await common.getProductPrice(updateList.productID);
-        const orderPrice = updateList.quantity * price;
+        let orderPrice = updateList.quantity * price;
         try {
-            await query('UPDATE order_list SET order_quantity = ?, order_price = ?, update_date = ? WHERE order_id = ? AND member_id = ? AND product_id = ?', [updateList.quantity, orderPrice, updateList.updateDate, updateList.orderID, updateList.memberID, updateList.productID]);
+            await query(
+                'UPDATE order_list SET order_quantity = ?, order_price = ? WHERE order_id = ? AND member_id = ? AND product_id = ?', 
+                [updateList.quantity, orderPrice, updateList.orderID, updateList.memberID, updateList.productID]
+            );
         } catch (err) {
             console.log(err);
             result.status = "更新訂單資料失敗。"

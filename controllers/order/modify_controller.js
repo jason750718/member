@@ -4,7 +4,7 @@ const verify = require('../../models/member/verifycation_model');
 const orderProductListData = require('../../models/order/order_all_product_model');
 const orderEdit = require('../../models/order/update_model');
 const deleteOrderData = require('../../models/order/delete_model');
-const orderOneProduct = require('../../models/order/order_one_product');
+const orderOneProduct = require('../../models/order/order_one_product_model');
 
 const Common = require('../../service/common');
 
@@ -33,8 +33,7 @@ module.exports = class ModifyOrder {
                         orderID: req.body.orderID,
                         memberID: memberID,
                         productID: req.body.productID,
-                        quantity: req.body.quantity,
-                        createDate: common.onTime()
+                        quantity: req.body.quantity
                     }
 
                     orderOneProduct(orderOneList).then(result => {
