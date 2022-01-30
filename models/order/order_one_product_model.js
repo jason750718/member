@@ -7,7 +7,7 @@ common = new Common();
 module.exports = async function postOneOrderData(orderOneList) {
     let result = {};
     const hasData = await common.checkOrderData(orderOneList.orderID, orderOneList.memberID, orderOneList.productID);
-    const hasComplete = await common.checkOrderComplete(orderOneList.orderID);
+    const hasComplete = await common.checkOrderComplete(orderOneList.orderID, orderOneList.memberID);
 
     if (hasData === true) {
         result.status = "新增單筆訂單資料失敗。"

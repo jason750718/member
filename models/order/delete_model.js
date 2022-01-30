@@ -8,7 +8,7 @@ module.exports = async function orderDelete(deleteList) {
     let result = {};
     for (let key in deleteList) {
         let hasData = await common.checkOrderData(deleteList[key].orderID, deleteList[key].memberID, deleteList[key].productID);
-        let hasComplete = await common.checkOrderComplete(deleteList[key].orderID, deleteList[key].memberID, deleteList[key].productID);
+        let hasComplete = await common.checkOrderComplete(deleteList[key].orderID, deleteList[key].memberID);
 
         if (hasData === false) {
             result.status = "刪除訂單資料失敗。"
@@ -16,7 +16,7 @@ module.exports = async function orderDelete(deleteList) {
             return Promise.reject(result);
         }
 
-        if (hasComplete === false) {
+        if (hasComplete === true) {
             result.status = "刪除訂單資料失敗。"
             result.err = "該筆訂單已完成。"
             return Promise.reject(result);

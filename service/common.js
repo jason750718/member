@@ -1,6 +1,25 @@
 const { query } = require('../models/connection_db');
 
 module.exports = class Common {
+    async getMemberData(memberID) {
+        try {
+            let rows = await query('SELECT * FROM member_info WHERE id = ?', [memberID]);
+            return rows[0];
+        } catch (error) {
+            console.log("取得會員資料失敗: " + error);
+            return error;
+        }
+    }
+
+    async getOrderData(orderID, memberID) {
+        try {
+            return await query('SELECT * FROM order_list WHERE order_id = ? AND member_id = ? ', [orderID, memberID]);
+        } catch (error) {
+            console.log("取得訂單資料失敗: " + error);
+            return error;
+        }
+    }
+
     async getOrderID() {
         try {
             let rows = await query('SELECT MAX(order_id) AS id FROM order_list');
@@ -36,16 +55,46 @@ module.exports = class Common {
         }
     }
 
-    async checkOrderComplete(orderID, memberID, productID) {
+    async checkOrderDataOnly(orderID, memberID) {
         try {
-            let rows = await query('SELECT * FROM order_list WHERE order_id = ? AND member_id = ? AND product_id = ? AND is_complete = 0', [orderID, memberID, productID]);
+            let rows = await query('SELECT * FROM order_list WHERE order_id = ? AND member_id = ?', [orderID, memberID]);
             if (rows[0] === undefined) {
                 return Promise.resolve(false);
             } else {
                 return Promise.resolve(true);
             }
         } catch (error) {
-            console.log('取得未完成訂單產品失敗');
+            console.log('取得訂單產品失敗');
+            return Promise.reject(error);
+        }
+    }
+
+    async checkOrderComplete(orderID, memberID) {
+        try {
+            let rows = await query('SELECT * FROM order_list WHERE order_id = ? AND member_id = ?', [orderID, memberID]);
+            if (rows.length === 0) {
+                return Promise.resolve(false);
+            }
+
+            if (rows[0].is_complete === 1) {
+                return Promise.resolve(true);
+            } else {
+                return Promise.resolve(false);
+            }
+        } catch (error) {
+            console.log('檢查完成訂單產品失敗');
+            return Promise.reject(error);
+        }
+    }
+
+    async checkOrderStock(orderProductID, orderQuantity) {
+        try {
+            let rows = await query('SELECT * FROM product WHERE id = ?', [orderProductID]);
+            if (rows[0].quantity < orderQuantity) {
+                return Promise.resolve(rows[0].name + "庫存不足");
+            }
+            return Promise.resolve(true);
+        } catch (error) {
             return Promise.reject(error);
         }
     }

@@ -5,6 +5,7 @@ const orderProductListData = require('../../models/order/order_all_product_model
 const orderEdit = require('../../models/order/update_model');
 const deleteOrderData = require('../../models/order/delete_model');
 const orderOneProduct = require('../../models/order/order_one_product_model');
+const orderComplete = require('../../models/order/complete_model');
 
 const Common = require('../../service/common');
 
@@ -12,6 +13,39 @@ common = new Common();
 check = new Check();
 
 module.exports = class ModifyOrder {
+    putProductComplete(req, res, next) {
+        const token = req.headers['token'];
+        //確定token是否有輸入
+        if (check.checkNull(token) === true) {
+            res.json({
+                err: "請輸入token！"
+            })
+        } else if (check.checkNull(token) === false) {
+            verify(token).then(tokenResult => {
+                if (tokenResult === false) {
+                    res.json({
+                        result: {
+                            status: "token錯誤。",
+                            err: "請重新登入。"
+                        }
+                    })
+                } else {
+                    const memberID = tokenResult;
+                    const orderID = req.body.orderID;
+                    orderComplete(orderID, memberID).then(result => {
+                        res.json({
+                            result: result
+                        })
+                    }, (err) => {
+                        res.json({
+                            result: err
+                        })
+                    })
+                }
+            })
+        }
+    }
+
     postOrderOneProduct(req, res, next) {
         const token = req.headers['token'];
         if (check.checkNull(token) === true) {
